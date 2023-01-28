@@ -58,6 +58,10 @@ func (c *C) SetCollisionLayer(l bvh.Layer) {
 	c.bvh.Insert(c.ID(), l, c.aabb.R())
 }
 
+// Position returns the current position of the agent.
+//
+// External callers must not set the position via the position reference object
+// returned here.
 func (c *C) Position() vector.V { return c.p.V() }
 func (c *C) SetPosition(v vector.V) {
 	c.p.Copy(v)
