@@ -8,6 +8,8 @@ import (
 )
 
 type O struct {
+	BVH *bvh.BVH
+
 	ID id.ID
 
 	CollisionLayer bvh.Layer
@@ -25,9 +27,9 @@ type C struct {
 	aabb hyperrectangle.M
 }
 
-func New(bvh *bvh.BVH, o O) *C {
+func New(o O) *C {
 	c := &C{
-		bvh:  bvh,
+		bvh:  o.BVH,
 		id:   o.ID,
 		l:    o.CollisionLayer,
 		aabb: hyperrectangle.New(vector.V{0, 0}, vector.V{0, 0}).M(),
