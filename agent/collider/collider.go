@@ -1,4 +1,4 @@
-package agent
+package collider
 
 import (
 	"github.com/downflux/bvh/bvh"
@@ -43,7 +43,9 @@ func New(bvh *bvh.BVH, o O) *Collider {
 	return a
 }
 
-func (a *Collider) ID() id.ID { return a.id }
+func (a *Collider) ID() id.ID              { return a.id }
+func (a *Collider) Radius() float64        { return a.r }
+func (a *Collider) AABB() hyperrectangle.R { return a.aabb.R() }
 
 func (a *Collider) CollisionLayer() bvh.Layer { return a.l }
 func (a *Collider) SetCollisionLayer(l bvh.Layer) {
@@ -53,7 +55,6 @@ func (a *Collider) SetCollisionLayer(l bvh.Layer) {
 	a.bvh.Insert(a.ID(), l, a.aabb.R())
 }
 
-func (a *Collider) Radius() float64    { return a.r }
 func (a *Collider) Position() vector.V { return a.p.V() }
 func (a *Collider) SetPosition(v vector.V) {
 	a.p.Copy(v)
