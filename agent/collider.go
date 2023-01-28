@@ -16,7 +16,7 @@ type O struct {
 	Position vector.V
 }
 
-type AgentCollider struct {
+type Collider struct {
 	bvh *bvh.BVH
 
 	id id.ID
@@ -28,10 +28,10 @@ type AgentCollider struct {
 	aabb hyperrectangle.M
 }
 
-func New(bvh *bvh.BVH, o O) *AgentCollider {
+func New(bvh *bvh.BVH, o O) *Collider {
 	r := o.Radius
 	x, y := o.Position.X(), o.Position.Y()
-	a := &AgentCollider{
+	a := &Collider{
 		id:   o.ID,
 		l:    o.CollisionLayer,
 		p:    vector.M{x, y},
@@ -43,19 +43,19 @@ func New(bvh *bvh.BVH, o O) *AgentCollider {
 	return a
 }
 
-func (a *AgentCollider) ID() id.ID { return a.id }
+func (a *Collider) ID() id.ID { return a.id }
 
-func (a *AgentCollider) CollisionLayer() bvh.Layer { return a.l }
-func (a *AgentCollider) SetCollisionLayer(l bvh.Layer) {
+func (a *Collider) CollisionLayer() bvh.Layer { return a.l }
+func (a *Collider) SetCollisionLayer(l bvh.Layer) {
 	a.l = l
 
 	a.bvh.Remove(a.ID())
 	a.bvh.Insert(a.ID(), l, a.aabb.R())
 }
 
-func (a *AgentCollider) Radius() float64    { return a.r }
-func (a *AgentCollider) Position() vector.V { return a.p.V() }
-func (a *AgentCollider) SetPosition(v vector.V) {
+func (a *Collider) Radius() float64    { return a.r }
+func (a *Collider) Position() vector.V { return a.p.V() }
+func (a *Collider) SetPosition(v vector.V) {
 	a.p.Copy(v)
 
 	x, y := v.X(), v.Y()
@@ -67,7 +67,7 @@ func (a *AgentCollider) SetPosition(v vector.V) {
 	a.bvh.Update(a.ID(), a.aabb.R())
 }
 
-func (a *AgentCollider) Close() error {
+func (a *Collider) Close() error {
 	a.bvh.Remove(a.ID())
 	return nil
 }
