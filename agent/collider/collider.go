@@ -16,7 +16,7 @@ type O struct {
 	Position vector.V
 }
 
-type Collider struct {
+type C struct {
 	bvh *bvh.BVH
 
 	id id.ID
@@ -28,47 +28,47 @@ type Collider struct {
 	aabb hyperrectangle.M
 }
 
-func New(bvh *bvh.BVH, o O) *Collider {
+func New(bvh *bvh.BVH, o O) *C {
 	r := o.Radius
 	x, y := o.Position.X(), o.Position.Y()
-	a := &Collider{
+	c := &C{
 		id:   o.ID,
 		l:    o.CollisionLayer,
 		p:    vector.M{x, y},
 		r:    r,
 		aabb: hyperrectangle.New(vector.V{x - r, y - r}, vector.V{x + r, y + r}).M(),
 	}
-	a.bvh.Insert(a.ID(), a.l, a.aabb.R())
+	c.bvh.Insert(c.ID(), c.l, c.aabb.R())
 
-	return a
+	return c
 }
 
-func (a *Collider) ID() id.ID              { return a.id }
-func (a *Collider) Radius() float64        { return a.r }
-func (a *Collider) AABB() hyperrectangle.R { return a.aabb.R() }
+func (c *C) ID() id.ID              { return c.id }
+func (c *C) Radius() float64        { return c.r }
+func (c *C) AABB() hyperrectangle.R { return c.aabb.R() }
 
-func (a *Collider) CollisionLayer() bvh.Layer { return a.l }
-func (a *Collider) SetCollisionLayer(l bvh.Layer) {
-	a.l = l
+func (c *C) CollisionLayer() bvh.Layer { return c.l }
+func (c *C) SetCollisionLayer(l bvh.Layer) {
+	c.l = l
 
-	a.bvh.Remove(a.ID())
-	a.bvh.Insert(a.ID(), l, a.aabb.R())
+	c.bvh.Remove(c.ID())
+	c.bvh.Insert(c.ID(), l, c.aabb.R())
 }
 
-func (a *Collider) Position() vector.V { return a.p.V() }
-func (a *Collider) SetPosition(v vector.V) {
-	a.p.Copy(v)
+func (c *C) Position() vector.V { return c.p.V() }
+func (c *C) SetPosition(v vector.V) {
+	c.p.Copy(v)
 
 	x, y := v.X(), v.Y()
-	a.aabb.Min().SetX(x - a.r)
-	a.aabb.Min().SetY(y - a.r)
-	a.aabb.Max().SetX(x + a.r)
-	a.aabb.Max().SetY(y + a.r)
+	c.aabb.Min().SetX(x - c.r)
+	c.aabb.Min().SetY(y - c.r)
+	c.aabb.Max().SetX(x + c.r)
+	c.aabb.Max().SetY(y + c.r)
 
-	a.bvh.Update(a.ID(), a.aabb.R())
+	c.bvh.Update(c.ID(), c.aabb.R())
 }
 
-func (a *Collider) Close() error {
-	a.bvh.Remove(a.ID())
+func (c *C) Close() error {
+	c.bvh.Remove(c.ID())
 	return nil
 }
